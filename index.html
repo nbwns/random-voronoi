@@ -16,6 +16,7 @@
             var sites = generateBeeHivePoints(view.size / 200, true);
             var bbox, diagram;
             var oldSize = view.size;
+            console.log(oldSize);
             var spotColor = new Color('white');
             var mousePos = view.center;
             var selected = false;
@@ -76,11 +77,11 @@
                 var col = view.size / size;
                 for(var i = -1; i < size.width + 1; i++) {
                     for(var j = -1; j < size.height + 1; j++) {
-                        var point = new Point(Math.random() * oldSize, Math.random() * oldSize);//  new Point(i, j) / new Point(size) * view.size + col / 2;
-                        if(j % 2)
+                        var point = new Point(Math.random() * view.size, Math.random() * view.size);//  new Point(i, j) / new Point(size) * view.size + col / 2;
+                        /*if(j % 2)
                             point += new Point(col.width / 2, 0);
                         if(loose)
-                            point += (col / 4) * Point.random() - col / 4;
+                            point += (col / 4) * Point.random() - col / 4;*/
                         points.push(point);
                     }
                 }
