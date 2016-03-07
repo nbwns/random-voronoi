@@ -7,7 +7,7 @@
       	<script type="text/javascript" src="voronoi.js"></script>
         
       </head>
-    <body style="background:white">
+    <body style="background:black">
         <div id="container" style="width:100%; height:100%;">
             <canvas id="voronoi"  style="width:100%; height:100%;"></canvas>
         </div>
@@ -16,7 +16,7 @@
             var sites = generateBeeHivePoints(view.size / 200, true);
             var bbox, diagram;
             var oldSize = view.size;
-            var spotColor = new Color('black');
+            var spotColor = new Color('white');
             var mousePos = view.center;
             var selected = false;
 
@@ -100,9 +100,9 @@
                     var next = points[(i + 1) == points.length ? 0 : i + 1];
                     var vector = (next - point) / 2;
                     path.add({
-                        point: point + vector,
+                        point: point/* + vector,
                         handleIn: -vector,
-                        handleOut: vector
+                        handleOut: vector*/
                     });
                 }
                 path.scale(0.95);
