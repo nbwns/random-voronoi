@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+<head>
+<!-- Load the Paper.js library -->
+<script type="text/javascript" src="http://darrenwiens.net/scripts/paper.js"></script>
+<!-- Define inlined PaperScript associate it with myCanvas -->
+<script src="http://code.jquery.com/jquery-1.8.2.js"></script>
+<script src="http://darrenwiens.net/scripts/rhill-voronoi-core.js"></script>
+<style type="text/css">
+	#myCanvas { 
+		border-style: solid;
+	}
+	#btnRedraw {
+		
+	}
+</style>
+
+<script type="text/javascript">
+	
+</script>
+<script type="text/paperscript" canvas="myCanvas">
+//paper.install(window);
+var maxX = view.size.width;
+var maxY = view.size.height;
+var voronoi =  new Voronoi();
+var bbox = {xl:0, xr:maxX, yt:0, yb:maxY};
+var maxPoint = new Point(maxX, maxY);
+var sites = [];
+var newPoints = new Group();
+var oldPoints = new Group();
+var cornerPoints = new Group();
+var newPaths = new Group();
+var dotNum = 200;
+for (var i=0;i<dotNum;i++) {
+	var randomPoint = Point.random();
+	var site = maxPoint * randomPoint;
+	sites.push(site);
+}
+var result = voronoi.compute(sites, bbox);
+for (var i = 0; i < sites.length; i++) {
+	var cell = result.cells[sites[i].voronoiId];
+	if (cell) {
+		var halfedges = cell.halfedges,
+		    length = halfedges.length;
+		if (length > 2) {
+			var points = [];
+			for (var j = 0; j < length; j++) {
+				v = halfedges[j].getEndpoint();
+				points.push(new Point(v));
+			}
+			createPath(points, sites[i]);
+		}
+	}
+	var point = new Path.Circle(new Point(sites[i].x, sites[i].y), 2);
+	point.strokeColor = 'black';
+	point.fillColor = 'red';
+	oldPoints.addChild(point);
+	var newpoint = new Path.Circle(new Point(sites[i].x, sites[i].y), 2);
+	newPoints.addChild(newpoint);
+}
+
+function createPath(points, center) {
+	var path = new Path();
+	path.closed = true;
+	for (var i = 0, l = points.length; i < l; i++) {
+		var point = points[i];
+		var next = points[(i + 1) == points.length ? 0 : i + 1];
+		var vector = (next - point) / 2;
+		path.add({
+			point: point
+		});
+	}
+	path.scale(1.0);
+	path.strokeColor = 'gray';
+	newPaths.addChild(path);
+	return path;
+}
+
+var speed = 20;
+function onFrame(event) {
+	if (event.count > 20) {
+		for (var i=0;i<oldPoints.children.length;i++) {
+			var vector = newPoints.children[i].position - oldPoints.children[i].position;
+			oldPoints.children[i].position += vector/speed;
+		}
+	}
+}
+
+window.redraw = function() {
+	sites.length = 0;
+	newPoints.removeChildren();
+	newPaths.removeChildren();
+	for (var i=0;i<dotNum;i++) {
+		var randomPoint = Point.random();
+		var site = maxPoint * randomPoint;
+		sites.push(site);
+	}
+	result = voronoi.compute(sites, bbox);
+	for (var i = 0; i < sites.length; i++) {
+		var cell = result.cells[sites[i].voronoiId];
+		if (cell) {
+			var halfedges = cell.halfedges,
+				length = halfedges.length;
+			if (length > 2) {
+				var points = [];
+				for (var j = 0; j < length; j++) {
+					v = halfedges[j].getEndpoint();
+					points.push(new Point(v));
+				}
+				createPath(points, sites[i]);
+			}
+		}
+		var point = new Path.Circle(new Point(sites[i].x, sites[i].y), 2);
+		newPoints.addChild(point);
+	}
+};
+</script>
+</head>
+<body>
+	<canvas id="myCanvas" style="" width="500" height="500"></canvas>
+	<input type="button" id="btnRedraw" value="Redraw" onClick="window.redraw()">
+</body>
+</html>
