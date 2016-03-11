@@ -12,15 +12,30 @@
             <canvas id="voronoi"  style="width:100%; height:100%;"></canvas>
         </div>
         <script type="text/paperscript" canvas="voronoi" >
+            var maxX = view.size.width;
+            var maxY = view.size.height;
+            var bbox = {xl:0, xr:maxX, yt:0, yb:maxY};
+            var maxPoint = new Point(maxX, maxY);
+            var sites = [];
+            var newPoints = new Group();
+            var oldPoints = new Group();
+            var cornerPoints = new Group();
+            var newPaths = new Group();
+            var dotNum = 200;
+            for (var i=0;i<dotNum;i++) {
+            	var randomPoint = Point.random();
+            	var site = maxPoint * randomPoint;
+            	sites.push(site);
+            }
             var voronoi =  new Voronoi();
-            var sites = generateBeeHivePoints(view.size / 200, true);
+            //var sites = generateBeeHivePoints(view.size / 200, true);
             var bbox, diagram;
             var oldSize = view.size;
             var spotColor = new Color('white');
             var mousePos = view.center;
             var selected = false;
 
-            onResize();
+           renderDiagram();
 
             function onMouseDown(event) {
                 sites.push(event.point);
@@ -106,7 +121,7 @@
                         handleOut: vector*/
                     });
                 }
-                path.scale(0.99);
+                path.scale(1);
                 removeSmallBits(path);
                 return path;
             }
