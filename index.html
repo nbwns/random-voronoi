@@ -35,25 +35,8 @@
             var mousePos = view.center;
             var selected = false;
 
-           //renderDiagram();
-           var result = voronoi.compute(sites, bbox);
-            for (var i = 0; i < sites.length; i++) {
-            	var cell = result.cells[sites[i].voronoiId];
-            	if (cell) {
-            		var halfedges = cell.halfedges,
-            		    length = halfedges.length;
-            		if (length > 2) {
-            			var points = [];
-            			for (var j = 0; j < length; j++) {
-            				v = halfedges[j].getEndpoint();
-            				points.push(new Point(v));
-            			}
-            			createPath(points, sites[i]);
-            		}
-            	}
-            	
-            }
-
+           renderDiagram();
+       
             function onMouseDown(event) {
                 sites.push(event.point);
                 renderDiagram();
